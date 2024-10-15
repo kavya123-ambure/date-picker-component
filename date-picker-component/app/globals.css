@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* In globals.css or styles.css */
+.highlight {
+  background-color: #ffeb3b !important;
+  color: black !important;
+  border-radius: 50%;
+}
+.react-calendar {
+  border: 2px solid #8d06ed;
+}
+.react-calendar__navigation{
+  background: #6c03b6;
+    color: white;
+}
+abbr{
+  text-decoration: none;
+}
+.react-calendar__viewContainer {
+  color: black;
+  
+}
+.react-calendar__month-view__weekdays{
+  color:#6c03b6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+@media (max-width: 500px) {
+  .react-calendar {
+    width: 300px; /* Set width to 300px at 500px screen width */
+  }
+}
+@media (max-width: 430px) {
+  .alignment{
+    padding: 20px 5px;
+
+  }
+  .main-font{
+    font-size:35px;
+  }
+  .calendar-preview{
+    padding:30px 10px;
+  }
+  .date-picker{
+    padding:30px 10px;
+  }
+}
