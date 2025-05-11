@@ -3,8 +3,7 @@
 import React, { useMemo } from 'react';
 import Calendar from 'react-calendar'; // Importing react-calendar
 import 'react-calendar/dist/Calendar.css'; // Importing calendar CSS for basic styling
-import '../globals.css'; // Ensure this path is correct for your project
-
+import '../globals.css'; 
 
 const CalendarPreview = ({ startDate, endDate, recurrence }) => {
   
@@ -34,15 +33,15 @@ const CalendarPreview = ({ startDate, endDate, recurrence }) => {
     const specificDayIndices = specificDays.map(day => dayOfWeekMap[day]);
   
  // Generate weekly recurrence with specific days
- while ((!endDateObj || currentDate <= endDateObj) && dates.length < 50) {
+ while ((!endDateObj || currentDate <= endDateObj) && dates.length < 48) {
   
 
   if (frequency === 'weekly' ) {
     if (specificDays.length === 0) {
-      if ((!endDateObj || currentDate <= endDateObj) && currentDate >= startDate) {
+      if ((!endDateObj || currentDate <= endDateObj)) {
         dates.push(new Date(currentDate));
       }
-      currentDate.setDate(currentDate.getDate() + 7 * nthDay);
+currentDate.setDate(currentDate.getDate() + 7 * (nthDay + 1));
     } else {
 
     // Go through each day of the week only if in selected specific days
@@ -59,7 +58,8 @@ const CalendarPreview = ({ startDate, endDate, recurrence }) => {
     }
 
     // Advance by "nthDay" number of weeks
-    currentDate.setDate(currentDate.getDate() + 7 * nthDay);
+    currentDate.setDate(currentDate.getDate() + 7 * (nthDay + 1));
+
   }
   } 
   
@@ -71,7 +71,7 @@ const CalendarPreview = ({ startDate, endDate, recurrence }) => {
     if ((!endDateObj || currentDate <= endDateObj) && currentDate >= startDate) {
       dates.push(new Date(currentDate));
     }
-    currentDate.setMonth(currentDate.getMonth() + nthDay);
+    currentDate.setMonth(currentDate.getMonth() + nthDay+1);
   } else {
     // Handle monthly recurrence
     const specificDay = specificDays[0]; // Only one specific day
@@ -92,7 +92,7 @@ const CalendarPreview = ({ startDate, endDate, recurrence }) => {
       }
       date.setDate(date.getDate() + 1);
     }
-    currentDate.setMonth(currentDate.getMonth() + nthDay);
+    currentDate.setMonth(currentDate.getMonth() + nthDay + 1);
   }
 } else {
   if ((!endDateObj || currentDate <= endDateObj) && currentDate >= startDate) {
@@ -100,11 +100,11 @@ const CalendarPreview = ({ startDate, endDate, recurrence }) => {
   }
     switch (frequency) {
       case 'daily':
-        currentDate.setDate(currentDate.getDate() + nthDay);
+        currentDate.setDate(currentDate.getDate() + nthDay + 1);
         break;
       
       case 'yearly':
-        currentDate.setFullYear(currentDate.getFullYear() + nthDay);
+        currentDate.setFullYear(currentDate.getFullYear() + nthDay + 1);
         break;
       default:
         console.error("Unsupported frequency:", frequency);
@@ -146,7 +146,7 @@ useMemo(() => {
     <div className="calendar-preview bg-white p-6 rounded-lg shadow-lg text-gray-800">
       <div className="mb-6">
         <h3 className="text-2xl font-semibold mb-3 text-center text-purple-700">Selected Dates</h3>
-        <div className="bg-gray-100 p-2 rounded-md">
+        <div className="bg-purple-100 p-2 rounded-md">
           <p className="mb-2">
             <span className="font-semibold text-purple-600 pr-2">Start Date:</span>
             {startDate ? startDate.toDateString() : "Not selected"}
@@ -157,28 +157,28 @@ useMemo(() => {
           </p>
         </div>
       </div>
-
-      <div>
-        <h3 className="text-2xl font-semibold mb-3 text-purple-700">Recurring Dates:</h3>
-        <div className="bg-gray-100 p-4 rounded-md">
-          {recurringDates.length > 0 ? (
-            <ul className="list-disc list-inside text-gray-700">
-              {recurringDates.map((date, index) => (
-                <li key={index}>{date.toDateString()}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-600">No recurring dates generated.</p>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-2xl  font-semibold my-5 p-3  text-center text-purple-700 ">Mini Calendar Preview:</h3>
+<div className="bg-purple-100 p-2 rounded-md">
+        <h3 className="text-2xl  font-semibold my-2   text-center text-purple-700 "> Calendar Preview:</h3>
         <div className="calendar-container flex flex-col items-center text-purple-700 bg-purple mb-6">
           <Calendar value={new Date()} tileClassName={tileClassName} />
         </div>
       </div>
+      <div>
+        <h3 className="text-2xl font-semibold my-3 text-purple-700 text-center">Recurring Dates:</h3>
+       
+          {recurringDates.length > 0 ? (
+            <div className="  text-gray-50 font-semibold flex flex-wrap gap-2 bg-purple-100 p-4 justify-center">
+              {recurringDates.map((date, index) => (
+                <span key={index} className="bg-purple-700 w-40 p-2 rounded ">{date.toDateString()}</span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600">No recurring dates generated.</p>
+          )}
+       
+      </div>
+
+      
     </div>
   );
 };

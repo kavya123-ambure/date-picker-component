@@ -103,14 +103,7 @@ const DatePicker = () => {
   recurrence={recurrence} 
 />
 
-      {/* Display the selected recurrence */}
-       <div className="selected-recurrence mt-6">
-       <h3 className="text-xl font-bold">Selected Recurrence:
-                    <span className="text-yellow-300 pl-2">
-                        {recurrence ? recurrence.frequency.charAt(0).toUpperCase() + recurrence.frequency.slice(1) : 'None'}
-                    </span>
-                </h3>
-      </div>
+      
     </div>
   );
 };

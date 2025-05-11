@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 const RecurrenceOptions = ({ onRecurrenceChange }) => {
   const [frequency, setFrequency] = useState('daily'); // Frequency (daily, weekly, monthly, yearly)
-  const [nthDay, setNthDay] = useState(1); // Nth day for the recurrence
+  const [nthDay, setNthDay] = useState(0); // Nth day for the recurrence
   const [specificDays, setSpecificDays] = useState([]); // Store selected days
   const [nthWeekDay, setNthWeekDay] = useState(2);
 
@@ -14,7 +14,7 @@ const RecurrenceOptions = ({ onRecurrenceChange }) => {
     if (newFrequency !== frequency) {
       setSpecificDays([]); // Clear specific days
       setNthWeekDay(1);    // Reset nth weekday
-      setNthDay(1);        // Reset nth day
+      setNthDay(0);        // Reset nth day
     }
 
     setFrequency(newFrequency);
@@ -56,7 +56,7 @@ const RecurrenceOptions = ({ onRecurrenceChange }) => {
       <input
         type="number"
         name="nthDay"
-        min="1"
+        min="0"
         value={nthDay}
         onChange={handleNthDayChange}
         className="border text-gray-700  border-gray-300 p-2 rounded-md mb-3 "
@@ -125,7 +125,7 @@ const RecurrenceOptions = ({ onRecurrenceChange }) => {
 
 
       {/* Submit Button */}
-      <button onClick={handleSubmit} className="my-2 p-2 bg-purple-500 text-white">
+      <button onClick={handleSubmit} className="my-2 p-2 bg-purple-700 text-white">
         Set Recurrence
       </button>
     </div>
