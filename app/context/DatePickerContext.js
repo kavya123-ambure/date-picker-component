@@ -2,10 +2,10 @@
 "use client"; 
 import React, { createContext, useState } from 'react';
 
-// Create the DatePickerContext
+// 1. Create the context
 export const DatePickerContext = createContext();
 
-// Create a provider component for managing state
+// 2. Create your own wrapper component
 export const DatePickerProvider = ({ children }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);

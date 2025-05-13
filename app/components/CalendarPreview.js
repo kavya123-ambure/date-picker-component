@@ -1,25 +1,19 @@
-"use client";
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import Calendar from 'react-calendar'; // Importing react-calendar
 import 'react-calendar/dist/Calendar.css'; // Importing calendar CSS for basic styling
 import '../globals.css'; 
 
 const CalendarPreview = ({ startDate, endDate, recurrence }) => {
-  
-
   const generateRecurringDates = () => {
     if (!startDate || !recurrence?.frequency) {
       console.warn("Invalid startDate or recurrence:", { startDate, recurrence });
       return [];
     }
-  
     const dates = [];
     const { frequency, nthDay, specificDays = [], nthWeekDay } = recurrence;
     let currentDate = new Date(startDate);
     const endDateObj = endDate ? new Date(endDate) : null;
-  
-
     const dayOfWeekMap = {
       "Sunday": 0,
       "Monday": 1,
@@ -31,105 +25,84 @@ const CalendarPreview = ({ startDate, endDate, recurrence }) => {
     };
 
     const specificDayIndices = specificDays.map(day => dayOfWeekMap[day]);
-  
- // Generate weekly recurrence with specific days
- while ((!endDateObj || currentDate <= endDateObj) && dates.length < 48) {
-  
+    // Generate weekly recurrence with specific days
+    while (!endDateObj || currentDate <= endDateObj)  {
 
-  if (frequency === 'weekly' ) {
-    if (specificDays.length === 0) {
-      if ((!endDateObj || currentDate <= endDateObj)) {
+        if (!endDateObj && dates.length >= 48) break;
+      if (frequency === 'weekly' ) {
+        if (specificDays.length === 0) {
+          if ((!endDateObj || currentDate <= endDateObj)) {
+            dates.push(new Date(currentDate));
+          }
+          currentDate.setDate(currentDate.getDate() + 7 * (nthDay + 1));
+        } 
+        else {
+          // Go through each day of the week only if in selected specific days
+          for (let i = 0; i < 7; i++) {
+            const dayOfWeek = (currentDate.getDay() + i) % 7;
+            if (specificDayIndices.includes(dayOfWeek)){
+              const date = new Date(currentDate);
+              date.setDate(date.getDate() + i);
+              if ((!endDateObj || date <= endDateObj) && date >= startDate) {
+                dates.push(new Date(date));
+              }
+            }
+          }
+          // Advance by "nthDay" number of weeks
+          currentDate.setDate(currentDate.getDate() + 7 * (nthDay + 1));
+
+         }
+       } 
+       else if (frequency === 'monthly') {
+        if (specificDays.length === 0) {
+          if ((!endDateObj || currentDate <= endDateObj) && currentDate >= startDate) {
+            dates.push(new Date(currentDate));
+        }
+         currentDate.setMonth(currentDate.getMonth() + (nthDay+1));
+      } 
+      else {
+        // Handle monthly recurrence
+        const specificDay = specificDays[0]; // Only one specific day
+        const specificDayIndex = dayOfWeekMap[specificDay];
+        // Find the nth occurrence of that specific day in the month
+        let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        let count = 0;
+        while (date.getMonth() === currentDate.getMonth()) {
+          if (date.getDay() === specificDayIndex) {
+            count++;
+            if (count === nthWeekDay) {
+              if ((!endDateObj || date <= endDateObj) && date >= startDate) {
+                dates.push(new Date(date));
+              }
+            }
+        }
+         date.setDate(date.getDate() + 1);
+       }
+       currentDate.setMonth(currentDate.getMonth() + (nthDay + 1));
+      }
+    } else {
+      if ((!endDateObj || currentDate <= endDateObj) && currentDate >= startDate) {
         dates.push(new Date(currentDate));
       }
-currentDate.setDate(currentDate.getDate() + 7 * (nthDay + 1));
-    } else {
-
-    // Go through each day of the week only if in selected specific days
-    for (let i = 0; i < 7; i++) {
-      const dayOfWeek = (currentDate.getDay() + i) % 7;
-
-      if (specificDayIndices.includes(dayOfWeek)) {
-        const date = new Date(currentDate);
-        date.setDate(date.getDate() + i);
-        if ((!endDateObj || date <= endDateObj) && date >= startDate) {
-          dates.push(new Date(date));
-        }
-      }
-    }
-
-    // Advance by "nthDay" number of weeks
-    currentDate.setDate(currentDate.getDate() + 7 * (nthDay + 1));
-
-  }
-  } 
-  
-  
-  else if (frequency === 'monthly') {
-    
-      
-  if (specificDays.length === 0) {
-    if ((!endDateObj || currentDate <= endDateObj) && currentDate >= startDate) {
-      dates.push(new Date(currentDate));
-    }
-    currentDate.setMonth(currentDate.getMonth() + nthDay+1);
-  } else {
-    // Handle monthly recurrence
-    const specificDay = specificDays[0]; // Only one specific day
-    const specificDayIndex = dayOfWeekMap[specificDay];
-
-    // Find the nth occurrence of that specific day in the month
-    let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    let count = 0;
-    while (date.getMonth() === currentDate.getMonth()) {
-      if (date.getDay() === specificDayIndex) {
-        count++;
-        if (count === nthWeekDay) {
-          if ((!endDateObj || date <= endDateObj) && date >= startDate) {
-            dates.push(new Date(date));
-          }
-          break;
-        }
-      }
-      date.setDate(date.getDate() + 1);
-    }
-    currentDate.setMonth(currentDate.getMonth() + nthDay + 1);
-  }
-} else {
-  if ((!endDateObj || currentDate <= endDateObj) && currentDate >= startDate) {
-    dates.push(new Date(currentDate));
-  }
-    switch (frequency) {
-      case 'daily':
-        currentDate.setDate(currentDate.getDate() + nthDay + 1);
+      switch (frequency) {
+        case 'daily':
+          currentDate.setDate(currentDate.getDate() + nthDay + 1);
         break;
-      
-      case 'yearly':
-        currentDate.setFullYear(currentDate.getFullYear() + nthDay + 1);
+        case 'yearly':
+          currentDate.setFullYear(currentDate.getFullYear() + nthDay + 1);
         break;
-      default:
-        console.error("Unsupported frequency:", frequency);
+        default:
+          console.error("Unsupported frequency:", frequency);
         return [];
+      }
     }
   }
-}
-
-return dates;
+  return dates;
 };
   
-// Memoize the recurring dates computation
-const recurringDates = useMemo(() => {
-  if (!startDate || !recurrence) {
-    return [];
-  }
-  console.log("Recomputing recurring dates...");
-  return generateRecurringDates();
-}, [startDate, endDate, recurrence]);
+// Call the generator directly
+  const recurringDates = generateRecurringDates();
 
-useMemo(() => {
-  if (recurringDates.length > 0) {
-    console.log("Recurring Dates Count: ", recurringDates.length);
-  }
-}, [recurringDates.length]);
  
   const tileClassName = ({ date, view }) => {
     
@@ -157,7 +130,7 @@ useMemo(() => {
           </p>
         </div>
       </div>
-<div className="bg-purple-100 p-2 rounded-md">
+      <div className="bg-purple-100 p-2 rounded-md">
         <h3 className="text-2xl  font-semibold my-2   text-center text-purple-700 "> Calendar Preview:</h3>
         <div className="calendar-container flex flex-col items-center text-purple-700 bg-purple mb-6">
           <Calendar value={new Date()} tileClassName={tileClassName} />

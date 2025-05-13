@@ -1,16 +1,16 @@
-"use client";
 import React, { useState } from 'react';
 
 const RecurrenceOptions = ({ onRecurrenceChange }) => {
   const [frequency, setFrequency] = useState('daily'); // Frequency (daily, weekly, monthly, yearly)
   const [nthDay, setNthDay] = useState(0); // Nth day for the recurrence
   const [specificDays, setSpecificDays] = useState([]); // Store selected days
-  const [nthWeekDay, setNthWeekDay] = useState(2);
+  const [nthWeekDay, setNthWeekDay] = useState(1);
+  
+  const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
 
   const handleFrequencyChange = (event) => {
     const newFrequency = event.target.value;
-
-    // Reset state when switching recurrence patterns
     if (newFrequency !== frequency) {
       setSpecificDays([]); // Clear specific days
       setNthWeekDay(1);    // Reset nth weekday
@@ -51,7 +51,7 @@ const RecurrenceOptions = ({ onRecurrenceChange }) => {
 
   return (
     <div className="recurrence-options">
-       {/* Input for nth day */}
+      
        <label className="block font-semibold mb-2">Select gap between Days/Weeks/Monthly/Yearly:</label>
       <input
         type="number"
@@ -77,14 +77,13 @@ const RecurrenceOptions = ({ onRecurrenceChange }) => {
           <label className="block  font-semibold mb-2">
             Select Specific Days of the Week:
           </label>
-          {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-            <div key={day} className="mb-2">
-               <input
+          {weekDays.map((day) => (
+            <div key={day} className="mb-1">
+              <input
                 type="checkbox"
-                name="specificDays"
                 value={day}
+                checked={specificDays.includes(day)}
                 onChange={handleDayChange}
-               
               />
               <label className="pl-2">{day}</label>
             </div>
@@ -103,7 +102,7 @@ const RecurrenceOptions = ({ onRecurrenceChange }) => {
             <option value={2}>2nd</option>
             <option value={3}>3rd</option>
             <option value={4}>4th</option>
-            <option value={5}>Last</option>
+            <option value={5}>5t</option>
           </select>
 
           {/* Specific Day of the Week */}
@@ -113,10 +112,11 @@ const RecurrenceOptions = ({ onRecurrenceChange }) => {
             <select
            
             className="border border-gray-300 rounded p-2 mb-4 w-full text-gray-700"
-            onChange={handleDayChange}
+              value={specificDays[0] || ''}
+            onChange={(e) => setSpecificDays([e.target.value])}
           >
-            <option value="">Select a day</option>
-            {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
+            <option value=" ">Select a day</option>
+            {weekDays.map((day) => (
               <option key={day} value={day}>{day}</option>
             ))}
           </select>
